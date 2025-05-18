@@ -1,0 +1,10 @@
+16:49:13 **** Incremental Build of configuration Debug for project W3-Board-Test-2401 ****
+make -j16 all 
+arm-none-eabi-size  W3-Board-Test-2401.elf 
+   text	   data	    bss	    dec	    hex	filename
+  34204	    724	   2220	  37148	   911c	W3-Board-Test-2401.elf
+Finished building: default.size.stdout
+ 
+
+16:49:14 Build Finished. 0 errors, 0 warnings. (took 189ms)
+

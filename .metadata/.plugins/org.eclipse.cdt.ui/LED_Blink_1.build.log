@@ -1,0 +1,10 @@
+19:57:55 **** Incremental Build of configuration Debug for project LED_Blink_1 ****
+make -j16 all 
+arm-none-eabi-gcc -o "LED_Blink_1.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\bdh99\OneDrive\Î∞îÌÉï ?ôîÎ©?\Í≥ºÏ†ú\?ùòÍ≥µÏ¢Ö?ï©?Ñ§Í≥ÑSTM\LED_Blink_1\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LED_Blink_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.1.202309131626/tools/bin/../lib/gcc/arm-none-eabi/11.3.1/../../../../arm-none-eabi/bin/ld.exe: cannot open linker script file C:\Users\bdh99\OneDrive\??????? ?????Ñπ?ÖÑ\??ÖÉ?Öå??Ö§?\?????ÖÉ?ÖÖ??Ñ≤????Ñπ???Ñ¥??ÖÉ?STM\LED_Blink_1\STM32F103RBTX_FLASH.ld: No such file or directory
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:64: LED_Blink_1.elf] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+
+19:57:55 Build Failed. 2 errors, 0 warnings. (took 135ms)
+

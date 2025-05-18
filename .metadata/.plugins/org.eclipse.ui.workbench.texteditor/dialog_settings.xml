@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="I2C1"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="I2C1"/>
+			<item value="HAL_ADC_ConvCpltCallback"/>
+			<item value="X_ADC1_"/>
+			<item value="HAL_GPIO_EXTI"/>
+			<item value="SysTick"/>
+			<item value="i2c"/>
+			<item value="temp"/>
+			<item value="GetTempLM75"/>
+			<item value="&amp;hi2c1"/>
+			<item value="GetTempLM75(&amp;hi2c1)"/>
+			<item value="_temp"/>
+			<item value="IC_Value2"/>
+			<item value="LD2"/>
+			<item value="Difference"/>
+			<item value="SW1Flag"/>
+		</list>
+		<list key="replacehistory">
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1164"/>
+		<item key="DIALOG_Y_ORIGIN" value="338"/>
+		<item key="DIALOG_WIDTH" value="322"/>
+		<item key="DIALOG_HEIGHT" value="391"/>
+		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
+	</section>
+</section>

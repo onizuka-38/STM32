@@ -1,0 +1,10 @@
+18:19:21 **** Build of configuration Debug for project PPG_01 ****
+make -j16 all 
+arm-none-eabi-size   PPG_01.elf 
+   text	   data	    bss	    dec	    hex	filename
+   9524	     20	   1668	  11212	   2bcc	PPG_01.elf
+Finished building: default.size.stdout
+ 
+
+18:19:21 Build Finished. 0 errors, 0 warnings. (took 328ms)
+

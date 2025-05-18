@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item key="WizardProjectsImportPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_CLOSE_CREATED_PROJECTS_ID" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_HIDE_CONFLICTING_PROJECTS_ID" value="false"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="C:\Users\bdh99\Downloads\W3-Board-Test-2401\W3-Board-Test-2401"/>
+			<item value="C:\Users\bdh99\Downloads\W3-practice"/>
+			<item value="C:\ST\STM32CubeIDE_1.13.1\STM32CubeIDE\stmsave\BMEAL_Test02"/>
+			<item value="C:\Users\bdh99\Downloads\BMEAL_Test01"/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value=""/>
+		</list>
+	</section>
+	<section name="SaveAsDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="706"/>
+		<item key="DIALOG_Y_ORIGIN" value="142"/>
+		<item key="DIALOG_WIDTH" value="525"/>
+		<item key="DIALOG_HEIGHT" value="580"/>
+		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
+	</section>
+	<section name="SmartImportWizard">
+		<item key="SmartImportRootWizardPage.STORE_HIDE_ALREADY_OPEN" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_CLOSE_IMPORTED" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
+		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="C:\Users\bdh99\Downloads\ysysyy\ysysyy"/>
+			<item value="C:\Users\bdh99\Downloads\w13 (1)\w13"/>
+			<item value="C:\Users\bdh99\Downloads\W4-SWV-Printf\W4-SWV-Printf"/>
+			<item value="C:\Users\bdh99\Downloads\w12\w12"/>
+			<item value="C:\Users\bdh99\Downloads\w12"/>
+			<item value="C:\Users\bdh99\Downloads\W3-Board-Test-2401"/>
+			<item value="D:\stmtest\alarm clock_01 - alwaysring"/>
+			<item value="C:\ST\STM32CubeIDE_1.13.1\STM32CubeIDE\stmsave\alarm clock_01"/>
+			<item value="D:\Games\Alarm_clock_01"/>
+			<item value="C:\Users\bdh99\Downloads\BMEAL"/>
+			<item value="C:\Users\bdh99\Downloads\W12-I2C-Scanner\W12-I2C-Scanner"/>
+			<item value="C:\ST\STM32CubeIDE_1.13.1\STM32CubeIDE\stmsave\7segment_01"/>
+		</list>
+	</section>
+</section>

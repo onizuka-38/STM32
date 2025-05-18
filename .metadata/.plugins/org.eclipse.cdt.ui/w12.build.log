@@ -1,0 +1,10 @@
+23:27:42 **** Build of configuration Debug for project w12 ****
+make -j16 all 
+arm-none-eabi-size  w12.elf 
+   text	   data	    bss	    dec	    hex	filename
+  29684	    476	   2140	  32300	   7e2c	w12.elf
+Finished building: default.size.stdout
+ 
+
+23:27:42 Build Finished. 0 errors, 0 warnings. (took 386ms)
+

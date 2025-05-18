@@ -1,0 +1,10 @@
+22:03:06 **** Incremental Build of configuration Debug for project w13 ****
+make -j16 all 
+arm-none-eabi-size  w13.elf 
+   text	   data	    bss	    dec	    hex	filename
+  42736	    476	   2300	  45512	   b1c8	w13.elf
+Finished building: default.size.stdout
+ 
+
+22:03:06 Build Finished. 0 errors, 0 warnings. (took 196ms)
+

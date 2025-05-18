@@ -1,0 +1,10 @@
+18:19:20 **** Build of configuration Debug for project 7segment_01 ****
+make -j16 all 
+arm-none-eabi-size   7segment_01.elf 
+   text	   data	    bss	    dec	    hex	filename
+   8428	     20	   1636	  10084	   2764	7segment_01.elf
+Finished building: default.size.stdout
+ 
+
+18:19:20 Build Finished. 0 errors, 0 warnings. (took 276ms)
+

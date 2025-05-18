@@ -1,0 +1,10 @@
+19:22:23 **** Incremental Build of configuration Debug for project BMEAL_Test02 ****
+make -j16 all 
+arm-none-eabi-size  BMEAL_Test02.elf 
+   text	   data	    bss	    dec	    hex	filename
+  32364	    476	   2212	  35052	   88ec	BMEAL_Test02.elf
+Finished building: default.size.stdout
+ 
+
+19:22:24 Build Finished. 0 errors, 0 warnings. (took 192ms)
+

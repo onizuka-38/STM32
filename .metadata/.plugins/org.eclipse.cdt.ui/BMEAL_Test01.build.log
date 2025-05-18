@@ -1,0 +1,10 @@
+18:19:20 **** Build of configuration Debug for project BMEAL_Test01 ****
+make -j16 all 
+arm-none-eabi-size   BMEAL_Test01.elf 
+   text	   data	    bss	    dec	    hex	filename
+   9648	     92	   1652	  11392	   2c80	BMEAL_Test01.elf
+Finished building: default.size.stdout
+ 
+
+18:19:20 Build Finished. 0 errors, 0 warnings. (took 262ms)
+
