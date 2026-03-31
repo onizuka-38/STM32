@@ -1,6 +1,6 @@
 # AUTO_CAR_US_01
 
-STM32 + HC-SR04 + L298N obstacle-avoidance autonomous car example.
+STM32 + HC-SR04 + L298N obstacle-avoidance autonomous car example
 
 ## Features
 - Forward driving in normal mode
