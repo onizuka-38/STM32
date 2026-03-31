@@ -51,24 +51,4 @@ STM32 마이크로컨트롤러를 기반으로 한 펌웨어 및 임베디드 �
 - 저전력 및 최적화 고려
 - Boot / Initialization / Error Handling 구조화
 
----
 
-## Project Structure
-
-```bash
-.
-├─ Core/
-│  ├─ Inc/             # 헤더 파일
-│  └─ Src/             # 메인 소스 파일
-├─ Drivers/
-│  ├─ CMSIS/           # CMSIS 관련 파일
-│  └─ STM32_HAL_Driver/# HAL 드라이버
-├─ App/
-│  ├─ app_task/        # 애플리케이션 레벨 로직
-│  ├─ app_driver/      # 센서/모듈 제어
-│  └─ app_utils/       # 유틸리티 함수
-├─ BSP/                # Board Support Package
-├─ Middleware/         # RTOS, 프로토콜 스택 등
-├─ Docs/               # 문서, 설계 자료
-├─ Tests/              # 테스트 코드
-└─ README.md
