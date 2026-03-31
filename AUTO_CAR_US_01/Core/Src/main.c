@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Ultrasonic-based autonomous car demo
+  * @brief          : Ultrasonic-based autonomous car demo with software PWM
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -24,16 +24,31 @@ typedef enum
   CAR_AVOID_REVERSE,
   CAR_AVOID_TURN
 } CarState;
+
+typedef struct
+{
+  int8_t left;
+  int8_t right;
+} MotorCommand;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define STOP_DISTANCE_CM 25U
 #define REVERSE_DISTANCE_CM 15U
-#define BRAKE_MS 100U
-#define REVERSE_MS 260U
-#define TURN_MS 320U
+
+#define BRAKE_MS 120U
+#define REVERSE_MS 320U
+#define TURN_MS 360U
 #define SENSOR_PERIOD_MS 80U
+
+#define PWM_PERIOD_MS 20U
+#define PWM_MAX_SPEED 100U
+
+#define SPD_FORWARD 68
+#define SPD_REVERSE 58
+#define SPD_TURN_OUT 72
+#define SPD_TURN_IN 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,6 +62,8 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 static volatile uint8_t g_manual_stop = 0U;
 static uint8_t g_turn_right_next = 1U;
+static CarState g_state = CAR_FORWARD;
+static uint32_t g_state_enter_tick = 0U;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,11 +75,9 @@ static void DWT_Init(void);
 static uint32_t micros(void);
 static void delay_us(uint32_t us);
 static void uart_log(const char *msg);
-static void motor_stop(void);
-static void motor_forward(void);
-static void motor_reverse(void);
-static void motor_turn_left(void);
-static void motor_turn_right(void);
+static void car_set_state(CarState next);
+static uint8_t speed_abs_i8(int8_t value);
+static void motor_apply_software_pwm(int8_t left_speed, int8_t right_speed);
 static uint32_t ultrasonic_read_cm(void);
 /* USER CODE END PFP */
 
@@ -93,44 +108,91 @@ static void uart_log(const char *msg)
   HAL_UART_Transmit(&huart2, (uint8_t *)msg, (uint16_t)strlen(msg), 100);
 }
 
-static void motor_stop(void)
+static void car_set_state(CarState next)
 {
-  HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_RESET);
+  g_state = next;
+  g_state_enter_tick = HAL_GetTick();
+
+  switch (next)
+  {
+  case CAR_FORWARD:
+    uart_log("STATE: FORWARD\r\n");
+    break;
+  case CAR_AVOID_BRAKE:
+    uart_log("STATE: BRAKE\r\n");
+    break;
+  case CAR_AVOID_REVERSE:
+    uart_log("STATE: REVERSE\r\n");
+    break;
+  case CAR_AVOID_TURN:
+    uart_log("STATE: TURN\r\n");
+    break;
+  default:
+    break;
+  }
 }
 
-static void motor_forward(void)
+static uint8_t speed_abs_i8(int8_t value)
 {
-  HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_RESET);
+  if (value < 0)
+  {
+    return (uint8_t)(-value);
+  }
+  return (uint8_t)value;
 }
 
-static void motor_reverse(void)
+static void motor_apply_software_pwm(int8_t left_speed, int8_t right_speed)
 {
-  HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_SET);
-}
+  uint32_t phase = HAL_GetTick() % PWM_PERIOD_MS;
+  uint32_t left_on_ms;
+  uint32_t right_on_ms;
 
-static void motor_turn_left(void)
-{
-  HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_RESET);
-}
+  uint8_t left_mag = speed_abs_i8(left_speed);
+  uint8_t right_mag = speed_abs_i8(right_speed);
 
-static void motor_turn_right(void)
-{
-  HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_SET);
+  if (left_mag > PWM_MAX_SPEED)
+  {
+    left_mag = PWM_MAX_SPEED;
+  }
+  if (right_mag > PWM_MAX_SPEED)
+  {
+    right_mag = PWM_MAX_SPEED;
+  }
+
+  left_on_ms = ((uint32_t)left_mag * PWM_PERIOD_MS) / PWM_MAX_SPEED;
+  right_on_ms = ((uint32_t)right_mag * PWM_PERIOD_MS) / PWM_MAX_SPEED;
+
+  if ((left_speed > 0) && (phase < left_on_ms))
+  {
+    HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_RESET);
+  }
+  else if ((left_speed < 0) && (phase < left_on_ms))
+  {
+    HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_SET);
+  }
+  else
+  {
+    HAL_GPIO_WritePin(MOTOR_L_IN1_GPIO_Port, MOTOR_L_IN1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_L_IN2_GPIO_Port, MOTOR_L_IN2_Pin, GPIO_PIN_RESET);
+  }
+
+  if ((right_speed > 0) && (phase < right_on_ms))
+  {
+    HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_RESET);
+  }
+  else if ((right_speed < 0) && (phase < right_on_ms))
+  {
+    HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_SET);
+  }
+  else
+  {
+    HAL_GPIO_WritePin(MOTOR_R_IN1_GPIO_Port, MOTOR_R_IN1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_R_IN2_GPIO_Port, MOTOR_R_IN2_Pin, GPIO_PIN_RESET);
+  }
 }
 
 static uint32_t ultrasonic_read_cm(void)
@@ -177,6 +239,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     last_tick = now;
     g_manual_stop ^= 1U;
+
     if (g_manual_stop)
     {
       uart_log("SAFETY STOP ON\r\n");
@@ -184,6 +247,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     else
     {
       uart_log("SAFETY STOP OFF\r\n");
+      car_set_state(CAR_FORWARD);
     }
   }
 }
@@ -192,9 +256,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 int main(void)
 {
   uint32_t distance_cm = 0U;
-  uint32_t tick_prev = 0U;
-  CarState state = CAR_FORWARD;
+  uint32_t sensor_tick = 0U;
+  uint32_t stop_led_tick = 0U;
   char log_buf[64];
+  MotorCommand cmd = {0, 0};
 
   HAL_Init();
   SystemClock_Config();
@@ -203,20 +268,14 @@ int main(void)
 
   DWT_Init();
   uart_log("AUTO_CAR_US_01 start\r\n");
+  uart_log("Software PWM enabled\r\n");
+  car_set_state(CAR_FORWARD);
 
   while (1)
   {
-    if (g_manual_stop)
+    if ((HAL_GetTick() - sensor_tick) >= SENSOR_PERIOD_MS)
     {
-      motor_stop();
-      HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-      HAL_Delay(150);
-      continue;
-    }
-
-    if ((HAL_GetTick() - tick_prev) >= SENSOR_PERIOD_MS)
-    {
-      tick_prev = HAL_GetTick();
+      sensor_tick = HAL_GetTick();
       distance_cm = ultrasonic_read_cm();
 
       if (distance_cm > 0U)
@@ -226,55 +285,86 @@ int main(void)
       }
     }
 
-    switch (state)
+    if (g_manual_stop)
+    {
+      cmd.left = 0;
+      cmd.right = 0;
+      motor_apply_software_pwm(cmd.left, cmd.right);
+
+      if ((HAL_GetTick() - stop_led_tick) >= 150U)
+      {
+        stop_led_tick = HAL_GetTick();
+        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+      }
+
+      HAL_Delay(2);
+      continue;
+    }
+
+    HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
+
+    switch (g_state)
     {
     case CAR_FORWARD:
-      HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
+      cmd.left = SPD_FORWARD;
+      cmd.right = SPD_FORWARD;
       if ((distance_cm > 0U) && (distance_cm <= STOP_DISTANCE_CM))
       {
-        state = CAR_AVOID_BRAKE;
-      }
-      else
-      {
-        motor_forward();
+        car_set_state(CAR_AVOID_BRAKE);
       }
       break;
 
     case CAR_AVOID_BRAKE:
-      motor_stop();
-      HAL_Delay(BRAKE_MS);
-      state = CAR_AVOID_REVERSE;
+      cmd.left = 0;
+      cmd.right = 0;
+      if ((HAL_GetTick() - g_state_enter_tick) >= BRAKE_MS)
+      {
+        car_set_state(CAR_AVOID_REVERSE);
+      }
       break;
 
     case CAR_AVOID_REVERSE:
-      motor_reverse();
-      HAL_Delay(REVERSE_MS);
-      state = CAR_AVOID_TURN;
+      cmd.left = -SPD_REVERSE;
+      cmd.right = -SPD_REVERSE;
+      if ((HAL_GetTick() - g_state_enter_tick) >= REVERSE_MS)
+      {
+        car_set_state(CAR_AVOID_TURN);
+      }
       break;
 
     case CAR_AVOID_TURN:
       if ((distance_cm > 0U) && (distance_cm < REVERSE_DISTANCE_CM))
       {
-        motor_reverse();
-        HAL_Delay(120);
+        cmd.left = -SPD_REVERSE;
+        cmd.right = -SPD_REVERSE;
       }
-      if (g_turn_right_next)
+      else if (g_turn_right_next)
       {
-        motor_turn_right();
+        cmd.left = SPD_TURN_OUT;
+        cmd.right = -SPD_TURN_IN;
       }
       else
       {
-        motor_turn_left();
+        cmd.left = -SPD_TURN_IN;
+        cmd.right = SPD_TURN_OUT;
       }
-      g_turn_right_next ^= 1U;
-      HAL_Delay(TURN_MS);
-      state = CAR_FORWARD;
+
+      if ((HAL_GetTick() - g_state_enter_tick) >= TURN_MS)
+      {
+        g_turn_right_next ^= 1U;
+        car_set_state(CAR_FORWARD);
+      }
       break;
 
     default:
-      state = CAR_FORWARD;
+      car_set_state(CAR_FORWARD);
+      cmd.left = 0;
+      cmd.right = 0;
       break;
     }
+
+    motor_apply_software_pwm(cmd.left, cmd.right);
+    HAL_Delay(2);
   }
 }
 
