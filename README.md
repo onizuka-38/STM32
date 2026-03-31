@@ -1,44 +1,74 @@
-<h1 align="center">💡 STM32 프로젝트 학습 저장소</h1>
-<p align="center">
-  STM32F411RE | ARM Cortex-M4 | HAL 기반 임베디드 개발 실습
-</p>
+# STM32 Firmware & Embedded Development Repository
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Board-STM32F411RE-blue?logo=stmicroelectronics" />
-  <img src="https://img.shields.io/badge/Language-C-blue.svg" />
-  <img src="https://img.shields.io/badge/IDE-STM32CubeIDE-lightgrey?logo=c" />
-</p>
+STM32 마이크로컨트롤러를 기반으로 한 펌웨어 및 임베디드 시스템 개발 레포지토리입니다.  
+드라이버 제어, 주변장치 인터페이스, RTOS 적용, 통신 프로토콜 구현, 디버깅 및 성능 최적화 등을 포함한 다양한 임베디드 개발 내용을 정리하고 관리합니다.
 
 ---
 
-## 🧭 소개
+## Overview
 
-이 저장소는 **STM32F411RE (Nucleo-64)** 보드를 활용하여 C언어 기반의 임베디드 시스템을 학습하는 공간입니다.  
-GPIO, UART, PWM, ADC 등 마이크로컨트롤러 주변장치들을 실습하며, STM32CubeIDE와 HAL 드라이버로 프로젝트를 구성합니다.
+이 레포지토리는 STM32를 활용한 임베디드 시스템 개발 프로젝트를 체계적으로 관리하기 위한 공간입니다.
 
----
+주요 목적은 아래와 같습니다.
 
-## 🔍 STM32F411RE 보드 개요
-
-> STMicroelectronics의 32비트 ARM Cortex-M4 기반 MCU
-
-| 항목 | 내용 |
-|------|------|
-| MCU | STM32F411RE (Cortex-M4, 최대 100MHz) |
-| Flash | 512KB |
-| SRAM | 128KB |
-| 인터페이스 | GPIO, UART, SPI, I2C, ADC, PWM, EXTI 등 |
-| 특징 | ST-LINK 디버거 내장, Arduino 호환 커넥터 |
+- STM32 기반 펌웨어 설계 및 구현
+- GPIO, UART, SPI, I2C, ADC, PWM, Timer 등 주변장치 제어
+- Bare-metal 또는 RTOS 기반 시스템 개발
+- 센서, 액추에이터, 외부 모듈 연동
+- 유지보수 가능한 코드 구조 설계
+- 디버깅, 테스트, 성능 개선 경험 축적
 
 ---
 
-## 📁 디렉토리 구성 예시
+## Tech Stack
+
+- **MCU**: STM32 Series
+- **Language**: C / C++
+- **IDE**: STM32CubeIDE / Keil / VSCode
+- **Framework / Library**:
+  - STM32 HAL
+  - LL Driver
+  - CMSIS
+  - FreeRTOS (optional)
+- **Debug Tools**:
+  - ST-Link
+  - UART Logging
+  - Logic Analyzer
+  - Oscilloscope
+
+---
+
+## Main Features
+
+- GPIO 제어
+- UART 통신
+- SPI / I2C 통신
+- ADC 데이터 수집
+- PWM 출력 제어
+- Timer / Interrupt 기반 이벤트 처리
+- RTOS 태스크 설계 및 스케줄링
+- 센서 데이터 처리
+- 저전력 및 최적화 고려
+- Boot / Initialization / Error Handling 구조화
+
+---
+
+## Project Structure
 
 ```bash
-STM32/
-├── GPIO_LedToggle/          # LED 깜빡이기 예제
-├── UART_Communication/      # 시리얼 통신 송수신
-├── ADC_TemperatureSensor/   # 온도 센서 읽기
-├── PWM_MotorControl/        # PWM을 이용한 모터 제어
-├── EXTI_ButtonInterrupt/    # 버튼 인터럽트 처리
-└── README.md
+.
+├─ Core/
+│  ├─ Inc/             # 헤더 파일
+│  └─ Src/             # 메인 소스 파일
+├─ Drivers/
+│  ├─ CMSIS/           # CMSIS 관련 파일
+│  └─ STM32_HAL_Driver/# HAL 드라이버
+├─ App/
+│  ├─ app_task/        # 애플리케이션 레벨 로직
+│  ├─ app_driver/      # 센서/모듈 제어
+│  └─ app_utils/       # 유틸리티 함수
+├─ BSP/                # Board Support Package
+├─ Middleware/         # RTOS, 프로토콜 스택 등
+├─ Docs/               # 문서, 설계 자료
+├─ Tests/              # 테스트 코드
+└─ README.md
